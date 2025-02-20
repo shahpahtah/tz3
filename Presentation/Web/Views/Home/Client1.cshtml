@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@{
+    ViewData["Title"] = "Send Message";
+}
+
+<h1>Send Message</h1>
+
+<form id="messageForm">
+    <div class="form-group">
+        <label for="text">Text:</label>
+        <input type="text" class="form-control" id="text" maxlength="128" required>
+    </div>
+    <div class="form-group">
+        <label for="sequenceNumber">Sequence Number:</label>
+        <input type="number" class="form-control" id="sequenceNumber" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+@section Scripts {
+    <script>
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const text = document.getElementById('text').value;
+            const sequenceNumber = document.getElementById('sequenceNumber').value;
+
+            fetch('/api/send', {  //  Обратите внимание на путь /api/send
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text,
+                    sequenceNumber: sequenceNumber
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Message sent!');
+                    document.getElementById('text').value = '';
+                    document.getElementById('sequenceNumber').value = '';
+                } else {
+                    alert('Error sending message.');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Message History";
+}
+
+<h1>Message History</h1>
+
+<form id="historyForm">
+    <div class="form-group">
+        <label for="startTime">Start Time:</label>
+        <input type="datetime-local" class="form-control" id="startTime" required>
+    </div>
+    <div class="form-group">
+        <label for="endTime">End Time:</label>
+        <input type="datetime-local" class="form-control" id="endTime" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Get History</button>
+</form>
+
+<div id="messageHistory"></div>
+
+@section Scripts {
+    <script>
+        document.getElementById('historyForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+
+            fetch(`/api/range?start=${startTime}&end=${endTime}`)  // Обратите внимание на путь /api/range
+                .then(response => response.json())
+                .then(messages => {
+                    let historyHtml = '<ul>';
+                    messages.forEach(message => {
+                        historyHtml += `<li>[${message.timeStamp}] (${message.sequenceNumber}): ${message.text}</li>`;
+                    });
+                    historyHtml += '</ul>';
+                    document.getElementById('messageHistory').innerHTML = historyHtml;
+                });
+        });
+    </script>
+}
